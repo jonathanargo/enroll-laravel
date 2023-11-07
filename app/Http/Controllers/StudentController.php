@@ -19,7 +19,7 @@ class StudentController extends Controller
             'students' => Student::latest()->get()
         ]);
     }
-
+    
     /**
      * Show the form for creating a new resource.
      */
