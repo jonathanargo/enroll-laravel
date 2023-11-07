@@ -1,36 +1,19 @@
 <?php
 
-namespace App\Console\Commands;
+namespace Database\Seeders;
 
-use Illuminate\Console\Command;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
 use App\Models\Student;
 
-class InitDb extends Command
+class StudentSeeder extends Seeder
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'app:init-db';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Command description';
-
-    /**
-     * Execute the console command.
-     */
-    public function handle()
+    public function run(): void
     {
         $this->cleanup();
         $this->createStudents();
     }
 
-    /** Purges all test data */
     private function cleanup()
     {
         foreach (Student::all() as $student) {
