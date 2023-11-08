@@ -17,13 +17,22 @@ import { Col, Row, Table } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const header = [
-    { title: 'Name', prop: 'name'} ,
-    { title: 'Year', prop: 'year' }
+    { title: 'Name', prop: 'name', isSortable: true},
+    { title: 'Year', prop: 'year', isSortable: true}
 ];
 
 function TableComponent({students}) {
     return (
-        <DatatableWrapper body={students} headers={header}>
+        <DatatableWrapper 
+            body={students}
+            headers={header}
+            paginationOptionsProps={{
+                initialState: {
+                  rowsPerPage: 10,
+                  options: [5, 10, 15, 20]
+                }
+            }}
+        >
             <Row className="mb-4">
                 <Col xs={12} lg={4} className="d-flex flex-col justify-content-end align-items-end">
                     <Filter />
