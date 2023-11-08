@@ -25,7 +25,7 @@ class StudentController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Students/Create');
     }
 
     /**
@@ -33,7 +33,10 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([]);
+        // TODO JSA - The student isn't being created. Fields not in request?
+        Student::create($request->all());
+        return redirect(route('students.index'));
     }
 
     /**
