@@ -6,6 +6,8 @@ use App\Models\Student;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Support\Facades\Redirect;
+
 
 class StudentController extends Controller
 {
@@ -34,8 +36,9 @@ class StudentController extends Controller
     public function store(Request $request)
     {
         // TODO JSA - Validation, etc
-        $student = Student::create($request->all());
-        return response()->json($student, 201);
+        $student = Student::create($request->get('newStudent'));
+        
+        return redirect(route('students.index'));
     }
 
     /**
