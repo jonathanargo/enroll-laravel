@@ -9,11 +9,13 @@ const dummyStudents = [
     {
         id: 1,
         name: "Test Student 1",
+        year: 3,
         phone: "1234567890"
     },
     {
         id: 2,
         name: "Test Student 2",
+        year: 2,
         phone: "1234567890"
     }
 ]
@@ -49,44 +51,47 @@ export function StudentTable({ studentList }) {
 }
 
 export default function Index({ auth, students }) {
-    const [showModal, setShowModal] = useState(false);
-    const [newStudent, setNewStudent] = useState({
-        id: Math.floor(Math.random() * 100),
-        name: '',
-        year: '',
-        phone: '',
+    const { data, setData, post, processing, errors } = useForm({
+        showModal: false,
+        newStudent: {
+            id: Math.floor(Math.random() * 100),
+            name: '',
+            year: '',
+            phone: '',
+        },
     });
 
-    const handleCloseCreateStudent = () => setShowModal(false);
-    const handleShowCreateStudent = () => setShowModal(true);
+    const handleCloseCreateStudent = () => setData('showModal', false);
+    const handleShowCreateStudent = () => setData('showModal', true);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setNewStudent({ ...newStudent, [name]: value });
+        setData('newStudent', { ...data.newStudent, [name]: value });
     };
 
     const handleAddStudent = () => {
         // TODO JSA - Use the actual create route
-        console.log("adding new student", newStudent);
-        let dummyNewStudent = JSON.parse(JSON.stringify(newStudent));
+        console.log("adding new student", data.newStudent);
+        let dummyNewStudent = JSON.parse(JSON.stringify(data.newStudent));
         dummyStudents.push(dummyNewStudent);
-        newStudent.id = Math.floor(Math.random() * 10000);
-        newStudent.name = '';
-        newStudent.year = '';
-        newStudent.phone = '';
+        setData('newStudent', {
+            id: Math.floor(Math.random() * 10000),
+            name: '',
+            year: '',
+            phone: ''
+        });
         handleCloseCreateStudent();
     }
-
 
     return (
         <AuthenticatedLayout user={auth.user}>
             <Head title="students" />
             <div className="max-w-3xl mx-auto p-4 sm:p-6 lg:p-8">
                 <Button className="mb-2" variant="primary" onClick={handleShowCreateStudent}>Create Student</Button>
-                <StudentTable studentList={students} />
+                <StudentTable studentList={dummyStudents} />
                 <CreateStudentForm 
-                    newStudent={newStudent}
-                    showModal={showModal}
+                    newStudent={data.newStudent}
+                    showModal={data.showModal}
                     closeCallback={handleCloseCreateStudent}
                     inputChangeCallback={handleInputChange}
                     createStudentCallback={handleAddStudent}
