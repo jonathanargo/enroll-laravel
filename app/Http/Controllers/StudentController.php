@@ -35,8 +35,17 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        // TODO JSA - Validation, etc
-        $student = Student::create($request->get('newStudent'));
+        $validated = $request->validate([
+            'newStudent.name' => 'required|string',
+            'newStudent.year' => 'required|integer',
+            'newStudent.phone' => 'required|string'
+        ], [], [
+            'newStudent.phone' => 'Phone',
+            'newStudent.year' => 'Year',
+            'newStudent.name' => 'Name'
+        ]);
+
+        Student::create($request->get('newStudent'));
         
         return redirect(route('students.index'));
     }

@@ -37,7 +37,6 @@ export function StudentTable({ students }) {
 
 export default function Index({ auth, students }) {
     const { data, setData, post, processing, errors } = useForm({
-        showModal: false,
         newStudent: {
             // id: Math.floor(Math.random() * 100),
             id: '',
@@ -47,8 +46,9 @@ export default function Index({ auth, students }) {
         },
     });
 
-    const handleCloseCreateStudent = () => setData('showModal', false);
-    const handleShowCreateStudent = () => setData('showModal', true);
+    const [ showModal, setShowModal ] = useState(false);
+    const handleCloseCreateStudent = () => setShowModal(false);
+    const handleShowCreateStudent = () => setShowModal(true);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -58,14 +58,15 @@ export default function Index({ auth, students }) {
     const handleAddStudent = (e) => {
         e.preventDefault;
         console.log("adding new student", data.newStudent);
-        post(route('students.store'), { onSuccess: (response) => {
-            setShowToast(true);
-        }});
-        
-        handleCloseCreateStudent();
+        post(route('students.store'), { 
+            onSuccess: (response) => {
+                setShowCreatedToast(true);
+                setShowModal(false);
+            }
+        });
     }
 
-    const [showToast, setShowToast] = useState(false);
+    const [showCreatedToast, setShowCreatedToast] = useState(false);
 
     return (
         <AuthenticatedLayout user={auth.user}>
@@ -75,15 +76,17 @@ export default function Index({ auth, students }) {
                 <StudentTable students={students} />
                 <CreateStudentForm 
                     newStudent={data.newStudent}
-                    showModal={data.showModal}
+                    showModal={showModal}
+                    processing={processing}
                     closeCallback={handleCloseCreateStudent}
                     inputChangeCallback={handleInputChange}
                     createStudentCallback={handleAddStudent}
+                    errors={errors}
                 />
             </div>
             <Toast
-                show={showToast}
-                onClose={() => setShowToast(false)}
+                show={showCreatedToast}
+                onClose={() => setShowCreatedToast(false)}
                 style={{
                     position: 'absolute',
                     top: 20,
