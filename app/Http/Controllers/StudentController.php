@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Log;
+use App\Http\Requests\CreateStudentRequest;
+
 
 
 class StudentController extends Controller
@@ -33,20 +36,14 @@ class StudentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CreateStudentRequest $request)
     {
-        $validated = $request->validate([
-            'newStudent.name' => 'required|string',
-            'newStudent.year' => 'required|integer',
-            'newStudent.phone' => 'required|string'
-        ], [], [
-            'newStudent.phone' => 'Phone',
-            'newStudent.year' => 'Year',
-            'newStudent.name' => 'Name'
-        ]);
+        $validatedData = $request->validated();
 
-        Student::create($request->get('newStudent'));
-        
+        Log::debug('Validated data', $validatedData);
+
+        Student::create($validatedData['newStudent']);
+
         return redirect(route('students.index'));
     }
 
@@ -79,6 +76,7 @@ class StudentController extends Controller
      */
     public function destroy(Student $student)
     {
-        //
+        $student->delete();
+        return redirect(route('students.index'));
     }
 }

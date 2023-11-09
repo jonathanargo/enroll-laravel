@@ -4,6 +4,8 @@ import { useForm, Head, Link } from '@inertiajs/react';
 import Button from 'react-bootstrap/Button';
 import CreateStudentForm from '@/Components/Student/CreateStudentForm';
 import { Alert, Col, Row, Table } from 'react-bootstrap';
+import { router } from '@inertiajs/react';
+
 import {
     DatatableWrapper,
     Filter,
@@ -12,8 +14,6 @@ import {
     TableBody,
     TableHeader
 } from 'react-bs-datatable';
-
-
 
 export default function Index({ auth, students }) {
     const { data, setData, post, processing, errors } = useForm({
@@ -27,13 +27,17 @@ export default function Index({ auth, students }) {
 
     const header = [
         { title: 'Name', prop: 'name', isSortable: true},
-        { title: 'Year', prop: 'year', isSortable: true}
+        { title: 'Year', prop: 'year', isSortable: true},
+        { title: 'Actions', prop: 'actions', cell: (student) => (
+            <Button variant="danger" onClick={() => handleDeleteStudent(student.id)}>Delete</Button>
+        )}
     ];
 
     const [ showModal, setShowModal ] = useState(false);
     const handleCloseCreateStudent = () => setShowModal(false);
     const handleShowCreateStudent = () => setShowModal(true);
     const [showCreatedMessage, setShowCreatedMessage] = useState(false);
+    const [showDeletedMessage, setShowDeletedMessage] = useState(false);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -42,7 +46,6 @@ export default function Index({ auth, students }) {
 
     const handleAddStudent = (e) => {
         e.preventDefault;
-        console.log("adding new student", data.newStudent);
         post(route('students.store'), { 
             onSuccess: (response) => {
                 setShowCreatedMessage(true);
@@ -50,6 +53,14 @@ export default function Index({ auth, students }) {
             }
         });
     };
+
+    const handleDeleteStudent = (studentId) => {
+        router.delete(route('students.destroy', studentId), {
+            onSuccess: (response) => {
+                setShowDeletedMessage(true);
+            }
+        });
+    }
 
     function TableComponent({ students }) {
         return (
@@ -83,8 +94,6 @@ export default function Index({ auth, students }) {
         );
     };
 
-    
-
     return (
         <AuthenticatedLayout user={auth.user}>
             <Head title="students" />
@@ -92,6 +101,11 @@ export default function Index({ auth, students }) {
                 {showCreatedMessage && (
                     <Alert variant="success" onClose={() => setShowCreatedMessage(false)} dismissible>
                         Student created successfully
+                    </Alert>
+                )}
+                {showDeletedMessage && (
+                    <Alert variant="info" onClose={() => setShowDeletedMessage(false)} dismissible>
+                        Student deleted successfully
                     </Alert>
                 )}
                 
