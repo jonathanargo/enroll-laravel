@@ -33,10 +33,9 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([]);
-        // TODO JSA - The student isn't being created. Fields not in request?
-        Student::create($request->all());
-        return redirect(route('students.index'));
+        // TODO JSA - Validation, etc
+        $student = Student::create($request->all());
+        return response()->json($student, 201);
     }
 
     /**
