@@ -9,6 +9,7 @@ use Inertia\Response;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Log;
 use App\Http\Requests\CreateStudentRequest;
+use App\Http\Requests\EditStudentRequest;
 
 
 
@@ -19,8 +20,8 @@ class StudentController extends Controller
      */
     public function index(): Response
     {
+        // TODO - needs to be paginated
         return Inertia::render('Students/Index', [
-            // TODO - paginate
             'students' => Student::latest()->get()
         ]);
     }
@@ -39,11 +40,7 @@ class StudentController extends Controller
     public function store(CreateStudentRequest $request)
     {
         $validatedData = $request->validated();
-
-        Log::debug('Validated data', $validatedData);
-
-        Student::create($validatedData['newStudent']);
-
+        Student::create($validatedData);
         return redirect(route('students.index'));
     }
 
@@ -56,19 +53,13 @@ class StudentController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Student $student)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Student $student)
+    public function update(EditStudentRequest $request, Student $student)
     {
-        //
+        $validatedData = $request->validated();
+        $student->update($validatedData);
+        return redirect(route('students.index'));
     }
 
     /**
